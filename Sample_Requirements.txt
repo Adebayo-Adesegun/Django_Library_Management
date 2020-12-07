@@ -1,0 +1,39 @@
+
+System Actors
+
+- Librarian 
+- Library user 
+- Super user 
+
+Key Requirements
+1. JWT Authetication
+2. Swagger Docs 
+3. Role management
+4. Audit Trail
+
+Functionalities 
+Super user 
+- Creates Librarian user 
+
+Librarian User 
+1. Approve library user's account 
+2. Delete library user's account
+3. Disable library user's account 
+4. Enable library user's account
+5. Create library catalouge 
+6. Add books too catalouge 
+7. Update book in catalouge 
+8. Delete book in catalouge
+9. View Catalouges
+10. View Books in Catalouge
+
+Library User
+1. Search for books 
+2. View Cataloues 
+3. View books in cataloues 
+4. Borrow book
+5. Return book
+
+
+
+

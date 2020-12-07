@@ -1,0 +1,11 @@
+.idea/
+
+Ignore all __pycache__ files
+__pycache__/
+
+
+
+venv/
+.vscode/
+
+migrationsMover.sh
