@@ -26,6 +26,8 @@ Librarian User
 8. Delete book in catalouge
 9. View Catalouges
 10. View Books in Catalouge
+11. Update Catalouge
+12. Delete Cataloue
 
 Library User
 1. Search for books 
