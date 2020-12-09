@@ -1,3 +1,66 @@
 from django.shortcuts import render
 
 # Create your views here.
+from django.http.response import JsonResponse
+from rest_framework.parsers import JSONParser
+from rest_framework import status
+
+from management.models import Catalogue, Book
+from management.serializers import CatalogueSerializer, BookSerializer
+from rest_framework.decorators import api_view
+
+
+@api_view(['GET', 'POST', 'DELETE'])
+def catalogue_list(request):
+    # Get List of Catalouges, Post a new Catalogue and Delete a Catalogue
+
+    if request.method == 'GET':
+        catalogues = Catalogue.objects.all()
+
+        catalogue_name = request.GET.get('name', None)
+        if catalogue_name is not None:
+            catalogues = Catalogue.filter(name__icontains=catalogue_name)
+
+        catalogue_serializer = CatalogueSerializer(catalogues, many=True, context={'request': request})
+        return JsonResponse(catalogue_serializer.data, safe=False)
+        # 'safe=False' for objects serialization
+    elif request.method == 'POST':
+        catalogue_data = JSONParser().parse(request)
+
+        catalogue_serializer = CatalogueSerializer(data=catalogue_data, context={'request': request})
+
+        if catalogue_serializer.is_valid():
+            print(request.user)
+            catalogue_serializer.create(catalogue_data)
+            return JsonResponse(catalogue_serializer.data, status=status.HTTP_201_CREATED)
+        return JsonResponse(catalogue_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    elif request.method == 'DELETE':
+        count = Catalogue.objects().delete()
+        return JsonResponse({'message' : '{} Catalogues were deleted successfully!'.format(count[0])}, status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def catalogue_detail(request, pk):
+    #find catalogue by primary key
+    try:
+        catalogue = Catalogue.objects.get(pk=pk)
+        if request.method == 'GET':            
+            catalogue_serializer = CatalogueSerializer(catalogue)
+            return JsonResponse(catalogue_serializer.data)
+
+        elif request.method == 'PUT':
+            catalogue_data = JSONParser().parse(request)
+            catalogue_serializer = CatalogueSerializer(catalogue, data=catalogue_data)
+
+            if catalogue_serializer.is_valid():
+                catalogue_serializer.save()
+                return JsonResponse(catalogue_serializer.data)
+            return JsonResponse(catalogue_serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+
+        elif request.method == 'DELETE':
+            catalogue.delete()
+            return JsonResponse({'message' : 'Tutorial was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
+
+
+    except Catalogue.DoesNotExist:
+        return JsonResponse({'message': 'The tutorial does not exist'})
