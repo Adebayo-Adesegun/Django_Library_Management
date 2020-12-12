@@ -64,3 +64,58 @@ def catalogue_detail(request, pk):
 
     except Catalogue.DoesNotExist:
         return JsonResponse({'message': 'The tutorial does not exist'})
+
+@api_view(['GET', 'POST', 'DELETE'])
+def book_list(request): 
+       # Get List of Catalouges, Post a new Catalogue and Delete a Catalogue
+
+    if request.method == 'GET':
+        books = Book.objects.all()
+
+        book_name = request.GET.get('name', None)
+        if book_name is not None:
+            books = Catalogue.filter(name__icontains=book_name)
+
+        book_serializer = BookSerializer(books, many=True, context={'request': request})
+        return JsonResponse(book_serializer.data, safe=False)
+        # 'safe=False' for objects serialization
+    elif request.method == 'POST':
+        book_data = JSONParser().parse(request)
+
+        book_serializer = BookSerializer(data=book_data, context={'request': request})
+
+        if book_serializer.is_valid():
+            print(request.user)
+            book_serializer.create(book_data)
+            return JsonResponse(book_serializer.data, status=status.HTTP_201_CREATED)
+        return JsonResponse(book_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    elif request.method == 'DELETE':
+        count = Book.objects().delete()
+        return JsonResponse({'message' : '{} Books were deleted successfully!'.format(count[0])}, status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def book_detail(request, pk):
+    #find Book by primary key
+    try:
+        book = Book.objects.get(pk=pk)
+        if request.method == 'GET':
+            book_serializer = BookSerializer(book)
+            return JsonResponse(book_serializer.data)
+
+        elif request.method == 'PUT':
+            book_data = JSONParser().parse(request)
+            book_serializer = CatalogueSerializer(book, data=book_data)
+
+            if book_serializer.is_valid():
+                book_serializer.save()
+                return JsonResponse(book_serializer.data)
+            return JsonResponse(book_serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+
+        elif request.method == 'DELETE':
+            book.delete()
+            return JsonResponse({'message' : 'Book was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
+
+
+    except Book.DoesNotExist:
+        return JsonResponse({'message': 'The book does not exist'})

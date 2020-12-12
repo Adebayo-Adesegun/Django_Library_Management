@@ -27,11 +27,15 @@ class CatalogueSerializer(serializers.ModelSerializer):
 
 
 class BookSerializer(serializers.ModelSerializer):
+
+    user_id = serializers.PrimaryKeyRelatedField(queryset = User.objects.all())
+    catalogue_id = serializers.PrimaryKeyRelatedField(queryset = Catalogue.objects.all())
     class Meta:
         model = Book
-        fields = ['id', 'name', 'description', 'created','catalogue_id' 'user']
+        fields = ['id', 'name', 'description', 'created','catalogue_id', 'user_id']
     
-    # def create(self, validated_data):
-    #     book = Book(**validated_data)
-    #     book.save()
-    #     return book
+    def create(self, validated_data):
+        user_id = validated_data.pop('user_id')
+        user = User.objects.get(id=user_id)
+        book = Book.objects.create(user=user, **validated_data)
+        return book
