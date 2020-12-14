@@ -8,8 +8,12 @@ from rest_framework import status
 from management.models import Catalogue, Book
 from management.serializers import CatalogueSerializer, BookSerializer
 from rest_framework.decorators import api_view
+from rest_framework import serializers
+from drf_yasg.utils import swagger_auto_schema
 
-
+@swagger_auto_schema(method='get', operation_description="Describe get operation")
+@swagger_auto_schema(method = 'post',operation_description="Describe post operation", request_body=CatalogueSerializer)
+@swagger_auto_schema(method = 'delete',operation_description="Describe delete operation")
 @api_view(['GET', 'POST', 'DELETE'])
 def catalogue_list(request):
     # Get List of Catalouges, Post a new Catalogue and Delete a Catalogue
@@ -39,6 +43,9 @@ def catalogue_list(request):
         count = Catalogue.objects().delete()
         return JsonResponse({'message' : '{} Catalogues were deleted successfully!'.format(count[0])}, status=status.HTTP_204_NO_CONTENT)
 
+@swagger_auto_schema(method ='get', operation_description="Describe get by Id operation")
+@swagger_auto_schema(method = 'put',operation_description="Describe update by Id operation", request_body=CatalogueSerializer)
+@swagger_auto_schema(method = 'delete',operation_description="Describe delete by Id operation")
 @api_view(['GET', 'PUT', 'DELETE'])
 def catalogue_detail(request, pk):
     #find catalogue by primary key
@@ -59,12 +66,15 @@ def catalogue_detail(request, pk):
 
         elif request.method == 'DELETE':
             catalogue.delete()
-            return JsonResponse({'message' : 'Tutorial was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
+            return JsonResponse({'message' : 'Catalogue was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
 
 
     except Catalogue.DoesNotExist:
-        return JsonResponse({'message': 'The tutorial does not exist'})
+        return JsonResponse({'message': 'The catalogue does not exist'})
 
+@swagger_auto_schema(method='get', operation_description="Describe get operation")
+@swagger_auto_schema(method = 'post',operation_description="Describe post operation", request_body=BookSerializer)
+@swagger_auto_schema(method = 'delete',operation_description="Describe delete operation")
 @api_view(['GET', 'POST', 'DELETE'])
 def book_list(request): 
        # Get List of Catalouges, Post a new Catalogue and Delete a Catalogue
@@ -94,6 +104,9 @@ def book_list(request):
         count = Book.objects().delete()
         return JsonResponse({'message' : '{} Books were deleted successfully!'.format(count[0])}, status=status.HTTP_204_NO_CONTENT)
 
+@swagger_auto_schema(method ='get', operation_description="Describe get by Id operation")
+@swagger_auto_schema(method = 'put',operation_description="Describe update by Id operation", request_body=BookSerializer)
+@swagger_auto_schema(method = 'delete',operation_description="Describe delete by Id operation")
 @api_view(['GET', 'PUT', 'DELETE'])
 def book_detail(request, pk):
     #find Book by primary key
