@@ -59,6 +59,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         # 'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
         # 'rest_framework.permissions.DjangoModelPermissions',
+        'rest_framework.permissions.IsAuthenticated', # make all endpoints private
     ],
 #Add default authentication for JWT implementation
     'DEFAULT_AUTHENTICATION_CLASSES': [

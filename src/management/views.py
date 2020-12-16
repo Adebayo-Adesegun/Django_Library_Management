@@ -4,10 +4,11 @@ from django.shortcuts import render
 from django.http.response import JsonResponse
 from rest_framework.parsers import JSONParser
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 
 from management.models import Catalogue, Book
 from management.serializers import CatalogueSerializer, BookSerializer
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework import serializers
 from drf_yasg.utils import swagger_auto_schema
 
@@ -15,6 +16,7 @@ from drf_yasg.utils import swagger_auto_schema
 @swagger_auto_schema(method = 'post',operation_description="Describe post operation", request_body=CatalogueSerializer)
 @swagger_auto_schema(method = 'delete',operation_description="Describe delete operation")
 @api_view(['GET', 'POST', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def catalogue_list(request):
     # Get List of Catalouges, Post a new Catalogue and Delete a Catalogue
 
@@ -47,6 +49,7 @@ def catalogue_list(request):
 @swagger_auto_schema(method = 'put',operation_description="Describe update by Id operation", request_body=CatalogueSerializer)
 @swagger_auto_schema(method = 'delete',operation_description="Describe delete by Id operation")
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def catalogue_detail(request, pk):
     #find catalogue by primary key
     try:
@@ -76,6 +79,7 @@ def catalogue_detail(request, pk):
 @swagger_auto_schema(method = 'post',operation_description="Describe post operation", request_body=BookSerializer)
 @swagger_auto_schema(method = 'delete',operation_description="Describe delete operation")
 @api_view(['GET', 'POST', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def book_list(request): 
        # Get List of Catalouges, Post a new Catalogue and Delete a Catalogue
 
@@ -108,6 +112,7 @@ def book_list(request):
 @swagger_auto_schema(method = 'put',operation_description="Describe update by Id operation", request_body=BookSerializer)
 @swagger_auto_schema(method = 'delete',operation_description="Describe delete by Id operation")
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def book_detail(request, pk):
     #find Book by primary key
     try:
